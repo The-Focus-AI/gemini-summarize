@@ -1,0 +1,3 @@
+- always pull keys out of one password
+- use pnpm
+- use the umwelten node library when possible

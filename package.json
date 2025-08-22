@@ -1,0 +1,37 @@
+{
+  "name": "gemini-summarize",
+  "version": "1.0.0",
+  "description": "A command line tool to extract metadata from PDF and EPUB files using Google Gemini",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "node dist/index.js test"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "commander": "^11.1.0",
+    "fs-extra": "^11.2.0",
+    "path": "^0.12.7",
+    "pdf-lib": "^1.17.1",
+    "umwelten": "^0.2.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.10.0",
+    "tsx": "^4.6.0",
+    "typescript": "^5.3.0"
+  },
+  "keywords": [
+    "pdf",
+    "epub",
+    "gemini",
+    "metadata",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT"
+}
