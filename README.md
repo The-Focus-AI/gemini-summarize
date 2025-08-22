@@ -8,11 +8,15 @@ A command line tool that extracts metadata from PDF and EPUB files using Google 
 - 🤖 Uses Google Gemini AI for intelligent document analysis
 - 🔑 Automatic API key management via 1Password
 - ⚡ Fast analysis using truncated PDFs (first 3 pages)
-- 💾 Caching system to avoid re-analyzing unchanged files
+- 💾 Smart caching system with file hash validation
 - 🧪 Test mode to analyze files from Downloads and Desktop
 - 📊 Confidence scores for each extracted field
+- 🌐 Works from any directory with proper path resolution
+- ⚡ Clean process termination (no hanging)
 
 ## Installation
+
+### Local Installation
 
 1. Clone the repository:
 ```bash
@@ -28,6 +32,40 @@ pnpm install
 3. Build the project:
 ```bash
 pnpm build
+```
+
+### System-wide Installation
+
+To install the tool system-wide so you can run it from anywhere:
+
+1. **Install to default location** (`/usr/local/bin`):
+```bash
+./scripts/install.sh
+```
+
+2. **Install to custom location** (e.g., `~/bin`):
+```bash
+./scripts/install.sh ~/bin
+```
+
+3. **Make sure the directory is in your PATH** (if using custom location):
+```bash
+echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+After installation, you can run the tool from anywhere:
+```bash
+gemini-summarize --help
+gemini-summarize analyze document.pdf
+gemini-summarize test
+```
+
+### Uninstall
+
+To remove the system-wide installation:
+```bash
+rm /usr/local/bin/gemini-summarize  # or wherever you installed it
 ```
 
 ## Setup
@@ -48,14 +86,16 @@ export GOOGLE_GENERATIVE_AI_API_KEY="your-api-key-here"
 ### Analyze a single file
 
 ```bash
-# Basic usage
-pnpm start analyze path/to/document.pdf
+# Basic usage (works from any directory)
+gemini-summarize analyze document.pdf
+gemini-summarize analyze ~/Downloads/document.pdf
+gemini-summarize analyze ../path/to/document.pdf
 
 # Use a specific Gemini model
-pnpm start analyze path/to/document.pdf --model gemini-2.5-flash
+gemini-summarize analyze document.pdf --model gemini-2.5-flash
 
 # Skip cache and force re-analysis
-pnpm start analyze path/to/document.pdf --no-cache
+gemini-summarize analyze document.pdf --no-cache
 ```
 
 ### Test with sample files
@@ -63,17 +103,24 @@ pnpm start analyze path/to/document.pdf --no-cache
 The tool can automatically find and test PDF/EPUB files in your Downloads and Desktop folders:
 
 ```bash
-pnpm start test
+gemini-summarize test
 ```
 
 ### Manage cache
 
 ```bash
 # List all cached files
-pnpm start cache --list
+gemini-summarize cache --list
 
 # Clear all cached results
-pnpm start cache --clear
+gemini-summarize cache --clear
+```
+
+### Test Gemini API connection
+
+```bash
+# Test if Gemini API is working
+gemini-summarize test-gemini
 ```
 
 ## Output Format
@@ -81,6 +128,16 @@ pnpm start cache --clear
 The tool outputs structured metadata with confidence scores:
 
 ```
+🔍 Analyzing document.pdf with gemini-2.0-flash...
+🔑 Fetching Google Gemini API key from 1Password...
+📄 Created truncated PDF with 3 pages for faster analysis
+📁 Stored at: /path/to/truncated.pdf
+🤖 Creating conversation with Gemini...
+📎 Adding file attachment...
+🏃 Starting Gemini analysis...
+✅ Gemini analysis completed successfully
+📊 Response metadata: { provider: 'google', model: 'gemini-2.0-flash', tokenUsage: {...} }
+📋 Analysis complete:
 📖 Title: The Great Gatsby (confidence: 0.95)
 👤 Author: F. Scott Fitzgerald (confidence: 0.98)
 📄 Type: book (confidence: 0.92)
@@ -103,6 +160,21 @@ The tool maintains a cache in the `.cache` directory to avoid re-analyzing uncha
 - Timestamp
 - File hash (MD5) for change detection
 
+### Cache Behavior
+
+- **Automatic**: Results are cached after each analysis
+- **Smart Invalidation**: Files are re-analyzed if their content changes (detected by MD5 hash)
+- **Path Resolution**: Works with relative and absolute paths
+- **Cross-directory**: Cache works regardless of which directory you run the command from
+
+## Performance Optimizations
+
+- **PDF Truncation**: Only the first 3 pages are sent to Gemini for faster analysis
+- **1Password Integration**: API keys are automatically fetched from 1Password
+- **Smart Caching**: Results are cached to avoid re-analyzing unchanged files
+- **Clean Termination**: Process exits cleanly after completion (no hanging)
+- **Path Resolution**: Works from any directory with proper relative path handling
+
 ## Development
 
 ```bash
@@ -118,6 +190,29 @@ pnpm build
 - Node.js 18+
 - Google Gemini API key
 - PDF or EPUB files to analyze
+
+## Troubleshooting
+
+### Common Issues
+
+**Tool hangs after analysis:**
+- ✅ Fixed! The tool now exits cleanly after completion
+
+**File not found errors:**
+- ✅ Fixed! The tool now properly resolves relative paths from any directory
+- Use relative paths like `document.pdf` or absolute paths like `~/Downloads/document.pdf`
+
+**1Password not found:**
+- Ensure 1Password CLI is installed: `brew install 1password-cli`
+- Authenticate with 1Password: `op signin`
+
+**API key not found:**
+- Ensure you have a "Google AI Studio Key" item in your 1Password Development vault
+- Or set the environment variable: `export GOOGLE_GENERATIVE_AI_API_KEY="your-key"`
+
+**Dependencies not installed:**
+- Run `pnpm install` in the project directory
+- Ensure you're in the correct project directory when running the tool
 
 ## License
 

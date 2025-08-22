@@ -22,7 +22,14 @@ program
   .option('--no-cache', 'Skip cache and force re-analysis')
   .action(async (file: string, options: { model: string; cache: boolean }) => {
     try {
-      const filePath = path.resolve(file);
+      // Resolve file path relative to original working directory if it's a relative path
+      let filePath: string;
+      if (path.isAbsolute(file)) {
+        filePath = file;
+      } else {
+        const originalPwd = process.env.ORIGINAL_PWD || process.cwd();
+        filePath = path.resolve(originalPwd, file);
+      }
       
       // Check if file exists
       if (!(await fs.pathExists(filePath))) {
@@ -92,6 +99,9 @@ program
         
         console.log('📋 Analysis complete:');
         printMetadata(metadata);
+        
+        // Exit cleanly after successful analysis
+        process.exit(0);
       } catch (error) {
         console.error('❌ Failed to parse document analysis:', error);
         console.error('Raw content:', result.content);
@@ -195,6 +205,9 @@ program
             await cache.set(file, metadata);
             console.log('📋 Analysis complete:');
             printMetadata(metadata);
+            
+            // Exit cleanly after successful analysis
+            process.exit(0);
           } catch (error) {
             console.error('❌ Failed to parse document analysis:', error);
             console.error('Raw content:', result.content);
@@ -218,6 +231,7 @@ program
     if (options.clear) {
       await cache.clear();
       console.log('✅ Cache cleared');
+      process.exit(0);
     } else if (options.list) {
       const files = await cache.list();
       if (files.length === 0) {
@@ -228,8 +242,10 @@ program
           console.log(`  - ${path.basename(file)}`);
         }
       }
+      process.exit(0);
     } else {
       console.log('Use --clear to clear cache or --list to list cached files');
+      process.exit(0);
     }
   });
 
@@ -241,6 +257,7 @@ program
       const success = await testGeminiConnection();
       if (success) {
         console.log('🎉 Gemini API test passed!');
+        process.exit(0);
       } else {
         console.log('❌ Gemini API test failed!');
         process.exit(1);
