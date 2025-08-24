@@ -33,10 +33,12 @@ export class ApiKeyManager {
       this.cachedKey = key;
       return key;
     } catch (error) {
+      console.error('❌ 1Password error:', error);
       throw new Error(
         'Google Gemini API key not found. Please either:\n' +
         '1. Set GOOGLE_GENERATIVE_AI_API_KEY environment variable, or\n' +
-        '2. Ensure you have a "Google AI Studio Key" item in your 1Password Development vault'
+        '2. Ensure you have a "Google AI Studio Key" item in your 1Password Development vault\n' +
+        `3. Original error: ${error instanceof Error ? error.message : String(error)}`
       );
     }
   }
@@ -47,7 +49,9 @@ export class ApiKeyManager {
         'item', 'get', 'Google AI Studio Key',
         '--vault', 'Development',
         '--format', 'json'
-      ]);
+      ], {
+        stdio: ['inherit', 'pipe', 'pipe'] // Allow interactive input, pipe output
+      });
 
       let stdout = '';
       let stderr = '';

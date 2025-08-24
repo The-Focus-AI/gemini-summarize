@@ -18,7 +18,7 @@ program
 program
   .command('analyze <file>')
   .description('Analyze a PDF or EPUB file and extract metadata')
-  .option('-m, --model <model>', 'Gemini model to use', 'gemini-2.0-flash')
+  .option('-m, --model <model>', 'Gemini model to use', 'gemini-2.5-flash')
   .option('--no-cache', 'Skip cache and force re-analysis')
   .action(async (file: string, options: { model: string; cache: boolean }) => {
     try {

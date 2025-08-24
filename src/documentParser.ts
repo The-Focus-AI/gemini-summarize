@@ -84,7 +84,7 @@ export async function extractDocumentMetadata(
 }
 
 // Function to get Google Gemini model details
-export function getGeminiModel(modelName: string = 'gemini-2.0-flash'): ModelDetails {
+export function getGeminiModel(modelName: string = 'gemini-2.5-flash'): ModelDetails {
   return {
     name: modelName,
     provider: 'google'

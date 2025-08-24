@@ -128,7 +128,7 @@ gemini-summarize test-gemini
 The tool outputs structured metadata with confidence scores:
 
 ```
-🔍 Analyzing document.pdf with gemini-2.0-flash...
+🔍 Analyzing document.pdf with gemini-2.5-flash...
 🔑 Fetching Google Gemini API key from 1Password...
 📄 Created truncated PDF with 3 pages for faster analysis
 📁 Stored at: /path/to/truncated.pdf
@@ -136,7 +136,7 @@ The tool outputs structured metadata with confidence scores:
 📎 Adding file attachment...
 🏃 Starting Gemini analysis...
 ✅ Gemini analysis completed successfully
-📊 Response metadata: { provider: 'google', model: 'gemini-2.0-flash', tokenUsage: {...} }
+📊 Response metadata: { provider: 'google', model: 'gemini-2.5-flash', tokenUsage: {...} }
 📋 Analysis complete:
 📖 Title: The Great Gatsby (confidence: 0.95)
 👤 Author: F. Scott Fitzgerald (confidence: 0.98)
@@ -146,7 +146,7 @@ The tool outputs structured metadata with confidence scores:
 
 ## Supported Models
 
-- `gemini-2.0-flash` (default)
+- `gemini-2.5-flash` (default)
 - `gemini-2.5-flash`
 - `gemini-1.5-flash`
 - Other Gemini models as available
